@@ -4,7 +4,9 @@ console.log('App is connected');
 const barbie = {
     name: 'Barbie',
     wardrobe: [],
-    wallet: 0
+    wallet: 0,
+    rental: [],
+    garage: [ ]
 }
 
 class Career {
@@ -101,6 +103,28 @@ barbie.render = () => {
         })).join('')
     }</ul>
     </div>
+    <div><h2>Rental Contains: </h2>
+    <ul>${barbie.rental.map((item => {
+      return `<li>
+            ${barbie.name} has bought a ${item.type} 
+            ${item.name} locateed in ${item.location}
+            that costs ${item.price} and adds ${item.income} to ${barbie.name}'s income  
+            </li>`
+    })).join('')
+
+}</ul>
+</div>
+<div><h2>Garage Contains: </h2>
+<ul>${barbie.garage.map((item => {
+  return `<li>
+        ${barbie.name} has bought a ${item.color} ${item.type} 
+        ${item.name} 
+        that costs ${item.price} and deducts ${item.income} from ${barbie.name}'s income  
+        </li>`
+})).join('')
+
+}</ul>
+</div>
 `;
 }
 
@@ -164,3 +188,75 @@ chanelButton.addEventListener('click', () => {
     }
 
 })
+
+class RentalProperty {
+    constructor(name, type, price, location, income) {
+      this.name = name;
+      this.type = type;
+      this.price = price;
+      this.location = location;
+      this.income = income;
+    }
+  }
+  
+  const condo = new RentalProperty('Condo', 'Rental', 50000, 'Miami', 500)
+  
+  const condoBtn = document.getElementById('condo')
+  
+  condoBtn.addEventListener('click', () => {
+    if (barbie.wallet >= condo.price) {
+      barbie.rental.push(condo);
+      barbie.wallet -= condo.price;
+      barbie.career.income += condo.income
+      barbie.render();
+      // WE updated the wardrobe that belongs to barbie so the object was changed
+      // the object control the information that is visible to us on the screen
+      // I want to re-render the content so that i can see the updated information in the browser
+    } else {
+      alert('Stop trippin you know you aint got it like that');
+    }
+  })
+  
+  const sellBtn = document.getElementById('sell')
+  
+  
+  
+  sellBtn.addEventListener('click', () => {
+    if (barbie.wardrobe.length > 0) {
+      const randomIndex = randomization(barbie.wardrobe.length)
+      const itemToSell = barbie.wardrobe[randomIndex]
+      barbie.wardrobe.splice(randomIndex, 1)
+      const sellingPrice = (Math.floor(Math.random() * ((200 - 70) + 1) + 70)) * 0.01
+      barbie.wallet += Math.floor(sellingPrice * itemToSell.price)
+      barbie.render();
+  
+    } else {
+      alert('You have NOTHING to sell bro')
+    }
+  })
+  
+  class Car {
+    constructor(name, type, price, color, income) {
+      this.name = name
+      this.type = type
+      this.price = price
+      this.color = color
+      this.income = income
+    }
+  
+  }
+  
+  const tesla = new Car('Tesla', 'Electric', 50000, 'red', -150)
+  
+  const teslaBtn = document.getElementById('tesla')
+  
+  teslaBtn.addEventListener('click', () => {
+    if (barbie.wallet >= tesla.price) {
+      barbie.garage.push(tesla);
+      barbie.wallet -= tesla.price;
+      barbie.career.income += tesla.income
+      barbie.render()
+    } else {
+      alert('Stop trippin you know you aint got it like that')
+    }
+  })
